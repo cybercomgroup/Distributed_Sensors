@@ -10,3 +10,4 @@
 
 @netsh wlan disconnect
 @netsh int ip set address "WiFi" dhcp
+@pause
