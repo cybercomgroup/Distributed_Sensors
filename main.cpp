@@ -13,6 +13,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include "client.h"
+#include "server.h"
 
 using namespace std;
 
