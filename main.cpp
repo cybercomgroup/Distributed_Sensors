@@ -12,6 +12,7 @@
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include "client.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 	
+	client();
 	
 	try{
 		if (argc != 3){
@@ -45,8 +47,9 @@ int main(int argc, char** argv) {
 		socket.bind(local_endpoint); 
 	
 		//Send socket
-		/*
+		
 		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
+		/*
 		boost::asio::ip::udp::endpoint sender_endpoint(boost::asio::ip::address::from_string("192.168.0.1"), 51885);
 		send_socket.send_to(boost::asio::buffer("hej",4),sender_endpoint);
 		*/
@@ -75,4 +78,6 @@ int main(int argc, char** argv) {
     std::cout << "Program run completed!" << std::endl;
     return 0;
 }
+
+
 
