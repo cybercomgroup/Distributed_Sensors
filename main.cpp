@@ -45,21 +45,25 @@ int main(int argc, char** argv) {
 		socket.bind(local_endpoint); 
 	
 		//Send socket
+		/*
 		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
-		
-	
+		boost::asio::ip::udp::endpoint sender_endpoint(boost::asio::ip::address::from_string("192.168.0.1"), 51885);
+		send_socket.send_to(boost::asio::buffer("hej",4),sender_endpoint);
+		*/
 		boost::array<char, 128> recv_buf;
+		
 		while(1) {
+			
 			boost::asio::ip::udp::endpoint sender_endpoint;
 			size_t len = socket.receive_from(
 			boost::asio::buffer(recv_buf), sender_endpoint);
 
 			std::cout << "Recieved data from IPv4:" << sender_endpoint.address().to_string() << std::endl;
 			std::cout.write(recv_buf.data(), len);	
-			//send
 			
-			 
+			//send
 			send_socket.send_to(boost::asio::buffer("hej",4),sender_endpoint);
+			
 		}
 	
 	}
