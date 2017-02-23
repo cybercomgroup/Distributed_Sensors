@@ -8,6 +8,6 @@
 @echo press anything to disconnect from AdHoc
 @pause
 
-@netsh wlan disconnect
 @netsh int ip set address "WiFi" dhcp
 @pause
+@netsh wlan disconnect
