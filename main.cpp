@@ -44,7 +44,7 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 	socket.open(boost::asio::ip::udp::v4());
 	socket.bind(local_endpoint); 
 		
-	string message,command,response ="Not a valid command!";
+	string message,command,variable,response ="Not a valid command!";
 		
 	string sensor = "temp";
 	boost::array<char, 128> recv_buf;
@@ -59,8 +59,10 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		
 		//Make message more manageable
 		strcpy(recv_buf.data(),message);
-		command = str.substr(0,1)
-		cout<<command<<endl;
+		command = str.substr(0,1);
+		variable = str.substr(1);
+		cout<<"Command recieved was: " << command<<endl;
+		cout<<"Vaiable recieved was: " << command<<endl;
 		
 		//Respond to messages
 		//Respond to hello
