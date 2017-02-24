@@ -1,8 +1,8 @@
 main: main.cpp client.o server.o
-	g++ -g main.cpp -o main client.o server.o -L/usr/local/lib/ -lboost_system -lpthread 
+	g++ -g main.cpp -o main client.o server.o -L/usr/local/lib/ -lboost_system -lpthread
 
 client.o: client.cpp client.h
-	g++ -c client.cpp
-	
+	g++ -std=c++11 -c client.cpp -L/usr/local/lib/ -lboost_system -lpthread
+
 server.o: server.cpp server.h
-	g++ -c server.cpp
+	g++ -c server.cpp -L/usr/local/lib/ -lboost_system -lpthread

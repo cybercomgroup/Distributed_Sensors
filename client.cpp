@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   client.cpp
  * Author: Laving & Mårlind
  *
@@ -6,11 +6,19 @@
  */
 #include "client.h"
 #include <iostream>
+#include <boost/thread.hpp>
+#include <boost/chrono.hpp>
 
 using namespace std;
- 
- 
+
+
+ void wait(int seconds) {
+   boost::this_thread::sleep_for(boost::chrono::seconds{seconds});
+ }
+
  void client(){
-	std::cout << "CLINET HERE" << std::endl;
- 
+    while(1) {
+      wait(1);
+	    std::cout << "CLINET HERE" << std::endl;
+    }
  }
