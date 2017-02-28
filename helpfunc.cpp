@@ -32,3 +32,9 @@ std::string getTime(){
 	std::time_t current_time = std::chrono::system_clock::to_time_t(current);
 	return(std::ctime(&current_time));
 }
+
+std::time_t getEpoch(){
+	std::chrono::time_point<std::chrono::system_clock> current;
+	current = std::chrono::system_clock::now();
+	return(std::chrono::system_clock::to_time_t(current));
+}
