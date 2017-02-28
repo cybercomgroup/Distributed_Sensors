@@ -15,8 +15,10 @@
 #include <string>
 #include <unistd.h>
 
-#include "client.h"
+#include "datatable.cpp"
 #include "server.h"
+#include "helpfunc.h"
+#include "logger.h"
 
 using namespace std;
 
