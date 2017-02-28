@@ -51,8 +51,8 @@ void DeviceTable::add(string ip,string sensor) {
     pointer->next = new Device;
     pointer = pointer->next;
     pointer->ip = ip;
-    head->sensor_type = sensor;
-    head->last_response = getEpoch();
+    pointer->sensor_type = sensor;
+    pointer->last_response = getEpoch();
     pointer->next = 0;
     size++;
 }
