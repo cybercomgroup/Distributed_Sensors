@@ -1,4 +1,8 @@
-#define MAX_DOWNTIME 10
+#include "helpfunc.h"
+
+#define MAX_DOWNTIME 100
+
+
 
 using namespace std;
 
@@ -15,7 +19,7 @@ public:
     DeviceTable();
     void init();
     void add(string ip,string sensor);
-    void getValidIP();
+    string* getValidIP();
     void deleteDevice(string ip);
     void updateDeviceDowntime(string ip);
     void print();
@@ -39,11 +43,10 @@ void DeviceTable::init() {
 void DeviceTable::add(string ip,string sensor) {
     Device *pointer = head;
 
-    if(pointer != 0){
-      while(pointer->next != 0)
-      {
-        pointer = pointer->next;
-      }
+
+    while(pointer->next != 0)
+    {
+      pointer = pointer->next;
     }
     pointer->next = new Device;
     pointer = pointer->next;
@@ -54,50 +57,54 @@ void DeviceTable::add(string ip,string sensor) {
     size++;
 }
 
-void DeviceTable::getValidIP(){
+string* DeviceTable::getValidIP(){
   Device *pointer = head;
-  Device *prev;
-  string iplist[size];
+
+  string* iplist = new string[size];
   int i = 0;
-  if(pointer != 0){
+
     while(pointer->next != 0)
     {
-      if((pointer->last_response - getEpoch()) > MAX_DOWNTIME) {
-        //delete
-        prev->next = pointer->next;
-        delete pointer;
+      cout<<"Epoch: "<<getEpoch()<<endl;
+      cout<<"Last: "<<pointer->next->last_response<<endl;
+      cout<<"Max: "<<MAX_DOWNTIME<<endl;
+      cout<<(getEpoch() - pointer->next->last_response)<<endl;
+      if((getEpoch() - pointer->next->last_response) > MAX_DOWNTIME) {
+        pointer->next = pointer->next->next;
+        delete pointer->next;
+        size--;
       }
       else {
         iplist[i] = pointer->ip;
+        pointer = pointer->next;
       }
       i++;
-      prev = pointer;
-      pointer = pointer->next;
     }
-  }
+  return iplist;
 }
 
 void DeviceTable::updateDeviceDowntime(string ip) {
-  Device *pointer = head;
-  if(pointer != 0){
-    while(pointer->next != 0)
+  Device *pointer = head->next;
+
+    while(pointer != 0)
     {
-      if(strcmp(pointer->ip,ip) == 0){
+      if(pointer->ip.compare(ip) == 0){
           pointer->last_response = getEpoch();
+          cout<<"Updating: "<<pointer->ip<<endl;
           return;
       }
       pointer = pointer->next;
     }
-  }
+
 }
 
 void DeviceTable::deleteDevice(string ip) {
-  Device *pointer = head;
-  Device *prev;
+  Device *pointer = head->next;
+  Device *prev = head;
   if(pointer != 0){
-    while(pointer->next != 0)
+    while(pointer != 0)
     {
-      if(strcmp(pointer->ip,ip) == 0){
+      if(pointer->ip.compare(ip) == 0){
           prev->next = pointer->next;
           delete pointer;
           size--;
@@ -110,7 +117,7 @@ void DeviceTable::deleteDevice(string ip) {
 }
 
 void DeviceTable::print() {
-    Device *pointer = head;
+    Device *pointer = head->next;
     while(pointer != 0)
     {
       cout << "IP: " << pointer->ip << endl;

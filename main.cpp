@@ -17,6 +17,7 @@
 #include <string>
 #include <chrono>
 #include <stdio.h>
+#include <unistd.h>
 
 #include "datatable.cpp"
 
@@ -29,8 +30,13 @@ using namespace std;
 int main(int argc, char** argv) {
 
 		DeviceTable dt;
-		dt.add("test\n");
-		dt.add("abc\n");
+		dt.add("test","temp");
+		dt.add("abc","temp");
+		dt.add("toobe","temp");
+		//sleep(2);
+		dt.updateDeviceDowntime("toobe");
+		dt.getValidIP();
+		//dt.add("valle","temp");
 		dt.print();
 
 
