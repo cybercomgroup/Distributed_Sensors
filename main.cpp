@@ -13,6 +13,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/ref.hpp>
 #include <string>
+#include <unistd.h>
 
 #include "client.h"
 #include "server.h"
@@ -23,14 +24,14 @@ using namespace std;
 
 void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint){
 
-	string validIps[] = {"192.168.0.11","192.168.0.15","192.168.0.17","192.168.0.1", "169.254.191.147"};
+	string validIps[] = {"192.168.0.1","192.168.0.11","192.168.0.15","192.168.0.17","169.254.191.147"};
 	for( int i = 0; i < sizeof(validIps)/sizeof(validIps[0]); i++){
 		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
 		boost::asio::ip::udp::endpoint endpoint(boost::asio::ip::address::from_string(validIps[i]), 53994);
 		send_socket.send_to(boost::asio::buffer("H",1),endpoint);
 	}
 }
-void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint){
+void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint,unsigned short recievePort){
 
 	//Set up
 
@@ -51,6 +52,7 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		std::cout << "Recieved data from IPv4: " << sender_endpoint.address().to_string() << std::endl;
 		std::cout << recv_buf.data() << endl;
 
+		sleep(1);
 		//Make message more manageable
 		string message(recv_buf.data(), len);
 		command = message.substr(0,1);
@@ -63,16 +65,15 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		//Respond to messages
 		//Respond to hello
 		if(command.compare("H") == 0){
-
-			response = sensor;
+			response = "W"+sensor;
+			cout<<response<<endl;
 			//Insert into my table
 		}
 		//Write to console table
 		if(command.compare("W") == 0){
 			response = "Exiting now";
 
-			cout<<"Writing on rasp"<<endl;
-			cout<<variable<<endl;
+			cout<<"Writing on rasp: "<<variable<<endl;
 		}
 		//Exit
 		if(command.compare("E") == 0){
@@ -82,6 +83,7 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 			break;
 		}
 		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
+		sender_endpoint.port(recievePort);
 		send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
 	}
 }
@@ -105,7 +107,7 @@ int main(int argc, char** argv) {
 		//Hello aspects
 		//std::vector<tableRow> nodeTable; function(std::vector<tableRow>* nodeTable)
 		sendHellos(boost::ref(io_service), boost::ref(local_endpoint));
-		reciever(boost::ref(io_service), boost::ref(local_endpoint));
+		reciever(boost::ref(io_service), boost::ref(local_endpoint),boost::lexical_cast<int>(argv[2]));
 
 
 
