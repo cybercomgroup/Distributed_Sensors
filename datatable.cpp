@@ -1,6 +1,6 @@
 #include "helpfunc.h"
 
-#define MAX_DOWNTIME 100
+#define MAX_DOWNTIME 5
 
 
 
@@ -66,10 +66,6 @@ string* DeviceTable::getValidIP(){
 
     while(pointer->next != 0)
     {
-      cout<<"Epoch: "<<getEpoch()<<endl;
-      cout<<"Last: "<<pointer->next->last_response<<endl;
-      cout<<"Max: "<<MAX_DOWNTIME<<endl;
-
       if((getEpoch() - pointer->next->last_response) > MAX_DOWNTIME) {
         cout<<"Delete "<<pointer->next->ip<<": Timed out"<<endl;
         tempP = pointer->next->next;

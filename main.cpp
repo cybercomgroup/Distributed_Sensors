@@ -30,9 +30,10 @@ int main(int argc, char** argv) {
 		dt.add("test","temp");
 		dt.add("abc","temp");
 		dt.add("toobe","temp");
-		//sleep(2);
+		sleep(2);
 		dt.updateDeviceDowntime("toobe");
-		dt.getValidIP();
+		string* s = dt.getValidIP();
+		cout<<s[1]<<endl;
 		//dt.add("valle","temp");
 		dt.print();
 
