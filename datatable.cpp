@@ -1,27 +1,37 @@
 
 using namespace std;
 
-struct Devices {
+struct Device {
     string      ip;
     string      sensor_type;
     std::time_t last_response;
-    Devices     *next;
+    Device     *next;
 };
 
-Devices init() {
-    Devices *head;
+class DeviceTable {
 
-    head = new Devices;
+public:
+    DeviceTable();
+    void init();
+    void add(string s);
+    void print();
+};
+
+DeviceTable::DeviceTable() {
+    init();
+}
+Device *head;
+
+void DeviceTable::init() {
+    head = new Device;
     head->next = 0;
-    head->ip = NULL;
-    head->sensor_type = NULL;
-    head->last_response = NULL;
-
-    return head;
+    head->ip = "";
+    head->sensor_type = "";
+    head->last_response = 0;
 }
 
-void add(Devices *head, Devices next) {
-    Devices *pointer = head;
+void DeviceTable::add(string s) {
+    Device *pointer = head;
 
     if(pointer != 0){
       while(pointer->next != 0)
@@ -29,13 +39,18 @@ void add(Devices *head, Devices next) {
         pointer = pointer->next;
       }
     }
-    pointer->next = next;
+    pointer->next = new Device;
+    pointer = pointer->next;
+    pointer->ip = s;
+    head->sensor_type = "";
+    head->last_response = 0;
+    pointer->next = 0;
 }
 
-void print(Devices *head) {
-    Devices *pointer = head;
+void DeviceTable::print() {
+    Device *pointer = head;
     if(pointer != 0){
-      while(pointer->next != 0)
+      while(pointer != 0)
       {
         cout << "IP: " << pointer->ip << endl;
         pointer = pointer->next;
