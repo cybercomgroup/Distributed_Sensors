@@ -8,9 +8,6 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include <boost/array.hpp>
-#include <boost/asio.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <iostream>
 #include <ctime>

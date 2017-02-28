@@ -59,6 +59,7 @@ void DeviceTable::add(string ip,string sensor) {
 
 string* DeviceTable::getValidIP(){
   Device *pointer = head;
+  Device *tempP = 0;
 
   string* iplist = new string[size];
   int i = 0;
@@ -68,17 +69,19 @@ string* DeviceTable::getValidIP(){
       cout<<"Epoch: "<<getEpoch()<<endl;
       cout<<"Last: "<<pointer->next->last_response<<endl;
       cout<<"Max: "<<MAX_DOWNTIME<<endl;
-      cout<<(getEpoch() - pointer->next->last_response)<<endl;
+
       if((getEpoch() - pointer->next->last_response) > MAX_DOWNTIME) {
-        pointer->next = pointer->next->next;
+        cout<<"Delete "<<pointer->next->ip<<": Timed out"<<endl;
+        tempP = pointer->next->next;
         delete pointer->next;
+        pointer->next = tempP;
         size--;
       }
       else {
         iplist[i] = pointer->ip;
+        i++;
         pointer = pointer->next;
       }
-      i++;
     }
   return iplist;
 }
