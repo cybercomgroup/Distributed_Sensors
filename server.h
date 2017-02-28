@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   server.h
  * Author: Laving & Mårlind
  *
@@ -6,7 +6,7 @@
  */
 
 #include <boost/asio.hpp>
- 
- 
-void sendHellos(boost::asio::io_service,boost::asio::ip::udp::endpoint);
-void reciever(boost::asio::io_service,boost::asio::ip::udp::endpoint);
+
+
+//void sendHellosd(boost::asio::io_service,boost::asio::ip::udp::endpoint);
+//void reciever(boost::asio::io_service,boost::asio::ip::udp::endpoint);

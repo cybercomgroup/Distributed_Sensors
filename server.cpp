@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   server.cpp
  * Author: Laving
  *
@@ -18,63 +18,3 @@
 #include <iostream>
 
 using namespace std;
-
- 
-void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint){
-	
-	string validIps[] = {"192.168.0.11","192.168.0.17","192.168.0.1", "169.254.191.147"};
-		for( int i = 0; i < sizeof(validIps)/sizeof(validIps[0]); i++){
-			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
-			boost::asio::ip::udp::endpoint endpoint(boost::asio::ip::address::from_string(validIps[i]), 58292);
-			send_socket.send_to(boost::asio::buffer("H",1),endpoint);
-		}
-}
-void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint){
-	
-	//Set up
-		
-	boost::asio::ip::udp::socket socket(io_service);
-	socket.open(boost::asio::ip::udp::v4());
-	socket.bind(local_endpoint); 
-		
-	string command,variable,response ="Not a valid command!";
-		
-	string sensor = "temp";
-	boost::array<char, 128> recv_buf;
-	while(1) {
-				
-		boost::asio::ip::udp::endpoint sender_endpoint;
-		size_t len = socket.receive_from(
-		boost::asio::buffer(recv_buf), sender_endpoint);
-
-		std::cout << "Recieved data from IPv4: " << sender_endpoint.address().to_string() << std::endl;
-		std::cout.write(recv_buf.data(), len);	
-		
-		//Make message more manageable
-		string message(recv_buf.data());
-		command = message.substr(0,1);
-		variable = message.substr(1);
-		cout<<"Command recieved was: " << command<<endl;
-		cout<<"Vaiable recieved was: " << command<<endl;
-		
-		//Respond to messages
-		//Respond to hello
-		if(command.compare("H") == 0){
-			
-			response = sensor;
-			//Insert into my table
-		}
-		//Write to console table
-		if(command.compare("W") == 0){
-			
-			response = "Exiting now"; 	
-		}
-		//Exit
-		if(command.compare("E") == 0){
-			
-			response = "Exiting now"; 
-		}
-		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
-		send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
-	}
-}
