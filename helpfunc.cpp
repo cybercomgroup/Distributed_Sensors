@@ -30,7 +30,9 @@ std::string getTime(){
 	std::chrono::time_point<std::chrono::system_clock> current;
 	current = std::chrono::system_clock::now();
 	std::time_t current_time = std::chrono::system_clock::to_time_t(current);
-	return(std::ctime(&current_time));
+	std::string s = std::ctime(&current_time);
+	s.erase(s.length()-1);
+	return(s);
 }
 
 std::time_t getEpoch(){

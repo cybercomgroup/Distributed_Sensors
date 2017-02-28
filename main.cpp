@@ -6,13 +6,16 @@
 
 /* 
  * File:   main.cpp
- * Author: aalex
+ * Author: aalex & Lindblad
  *
  * Created on den 15 februari 2017, 09:46
  */
 
 #include <cstdlib>
 #include <iostream>
+#include <thread>
+#include "helpfunc.h"
+#include "logger.h"
 
 using namespace std;
 
@@ -21,8 +24,10 @@ using namespace std;
  */
 int main(int argc, char** argv) {
 
-    cout<<"HELLO WORLD"<<endl;
-    system("pause");
+
+	thread t1 (logger, "log0001", 500); // funcname, logfilename, #of ms between logging each data point
+	t1.join();
+
     return 0;
 }
 
