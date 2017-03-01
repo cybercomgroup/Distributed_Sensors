@@ -19,7 +19,10 @@ public:
     DeviceTable();
     void init();
     void add(string ip,string sensor);
+<<<<<<< HEAD
     void addOrUpdateDowntime(string ip,string sensor);
+=======
+>>>>>>> adde208f34b9933fca24e4310add044f45aa0358
     string* getValidIP();
     void deleteDevice(string ip);
     void updateDeviceDowntime(string ip);
@@ -58,6 +61,7 @@ void DeviceTable::add(string ip,string sensor) {
     size++;
 }
 
+<<<<<<< HEAD
 void DeviceTable::addOrUpdateDowntime(string ip,string sensor) {
     Device *pointer = head;
 
@@ -81,6 +85,8 @@ void DeviceTable::addOrUpdateDowntime(string ip,string sensor) {
 }
 
 
+=======
+>>>>>>> adde208f34b9933fca24e4310add044f45aa0358
 string* DeviceTable::getValidIP(){
   Device *pointer = head;
   Device *tempP = 0;
