@@ -72,12 +72,18 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 			dt.addOrUpdateDowntime(sender_endpoint.address().to_string(),variable);
 			//cout<<response<<endl;
 			//Insert into my table
+			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
+			sender_endpoint.port(recievePort);
+			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
 		}
 		//Write to console table
 		if(command.compare("W") == 0){
 			response = "Exiting now";
 
 			cout<<"Writing on rasp: "<<variable<<endl;
+			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
+			sender_endpoint.port(recievePort);
+			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
 		}
 		//Exit
 		if(command.compare("E") == 0){
@@ -86,9 +92,7 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 			cout<<"Reciever will now terminate"<<endl;
 			break;
 		}
-		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
-		sender_endpoint.port(recievePort);
-		send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
+		dt.print();
 	}
 }
 
