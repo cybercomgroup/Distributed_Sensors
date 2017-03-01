@@ -22,16 +22,18 @@
 
 using namespace std;
 
+DeviceTable dt;
 
-void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint){
+void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint,unsigned short port){
 
 	string validIps[] = {"192.168.0.1","192.168.0.11","192.168.0.15","192.168.0.17","169.254.191.147"};
 	for( int i = 0; i < sizeof(validIps)/sizeof(validIps[0]); i++){
 		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
-		boost::asio::ip::udp::endpoint endpoint(boost::asio::ip::address::from_string(validIps[i]), 53994);
-		send_socket.send_to(boost::asio::buffer("H",1),endpoint);
+		boost::asio::ip::udp::endpoint endpoint(boost::asio::ip::address::from_string(validIps[i]), port);
+		send_socket.send_to(boost::asio::buffer("HTemp",5),endpoint);
 	}
 }
+
 void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint,unsigned short recievePort){
 
 	//Set up
@@ -66,8 +68,9 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		//Respond to messages
 		//Respond to hello
 		if(command.compare("H") == 0){
-			response = "W"+sensor;
-			cout<<response<<endl;
+			response = "R"+sensor;
+			dt.addOrUpdateDowntime(sender_endpoint.address().to_string(),variable);
+			//cout<<response<<endl;
 			//Insert into my table
 		}
 		//Write to console table
@@ -108,7 +111,7 @@ int main(int argc, char** argv) {
 
 		//Hello aspects
 		//std::vector<tableRow> nodeTable; function(std::vector<tableRow>* nodeTable)
-		sendHellos(boost::ref(io_service), boost::ref(local_endpoint));
+		sendHellos(boost::ref(io_service), boost::ref(local_endpoint),boost::lexical_cast<int>(argv[2]));
 		reciever(boost::ref(io_service), boost::ref(local_endpoint),boost::lexical_cast<int>(argv[2]));
 
 
