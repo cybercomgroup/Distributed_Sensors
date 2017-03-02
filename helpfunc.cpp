@@ -13,7 +13,7 @@
 
 using namespace std;
 
-std::string  getTemp(){
+std::string getTemp(){
         double T;
 				FILE * temperatureFile;
         temperatureFile = fopen ("/sys/class/thermal/thermal_zone0/temp", "r");

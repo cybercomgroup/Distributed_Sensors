@@ -20,31 +20,34 @@
 #include "helpfunc.h"
 #include "logger.h"
 
+//DEFINES:
+#define SENSOR "Temp"
+
+
 using namespace std;
 
 DeviceTable dt;
 
 void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint,unsigned short port){
 
-	string validIps[] = {"192.168.0.1","192.168.0.11","192.168.0.15","192.168.0.17","169.254.191.147"};
+	string* validIps = dt.getValidIP();
+	//string* validIps[] = {"192.168.0.1","192.168.0.11","192.168.0.15","192.168.0.17","169.254.191.147"};
 	for( int i = 0; i < sizeof(validIps)/sizeof(validIps[0]); i++){
 		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
 		boost::asio::ip::udp::endpoint endpoint(boost::asio::ip::address::from_string(validIps[i]), port);
-		send_socket.send_to(boost::asio::buffer("HTemp",5),endpoint);
+		send_socket.send_to(boost::asio::buffer("H"+SENSOR,5),endpoint);
 	}
 }
 
 void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint,unsigned short recievePort){
 
 	//Set up
-
 	boost::asio::ip::udp::socket socket(io_service);
 	socket.open(boost::asio::ip::udp::v4());
 	socket.bind(local_endpoint);
 
 	string command,variable,response ="Not a valid command!";
 
-	string sensor = "temp";
 	boost::array<char, 128> recv_buf;
 	while(1) {
 
@@ -53,7 +56,7 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		boost::asio::buffer(recv_buf), sender_endpoint);
 
 		std::cout << "Recieved data from IPv4: " << sender_endpoint.address().to_string() << std::endl;
-		std::cout << recv_buf.data() << endl;
+		//std::cout << recv_buf.data() << endl;
 
 		sleep(1);
 		//Make message more manageable
@@ -61,14 +64,11 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		command = message.substr(0,1);
 		variable = message.substr(1);
 		cout<<"Message recieved was: " << message<<endl;
-		cout<<"Command recieved was: " << command<<endl;
-		cout<<"Vaiable recieved was: " << variable<<endl;
-
 
 		//Respond to messages
 		//Respond to hello
 		if(command.compare("H") == 0){
-			response = "R"+sensor;
+			response = "R"+SENSOR;
 			dt.addOrUpdateDowntime(sender_endpoint.address().to_string(),variable);
 			//cout<<response<<endl;
 			//Insert into my table
@@ -76,11 +76,18 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 			sender_endpoint.port(recievePort);
 			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
 		}
-		//Write to console table
+		//Write to console (MAINLY FOR TESTING)
 		if(command.compare("W") == 0){
-			response = "Exiting now";
+			response = "Writing";
 
-			cout<<"Writing on rasp: "<<variable<<endl;
+			cout<<"Writing on request from "<<sender_endpoint.address().to_string()<<": "<<variable<<endl;
+			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
+			sender_endpoint.port(recievePort);
+			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
+		}
+		if(command.compare("F") == 0){
+			response = "W" + getTemp();
+
 			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
 			sender_endpoint.port(recievePort);
 			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
@@ -112,9 +119,12 @@ int main(int argc, char** argv) {
 		std::cout << "Local bind " << local_endpoint << std::endl;
 
 
-
+		//string* validIps[] = {"192.168.0.1","192.168.0.11","192.168.0.15","192.168.0.17","169.254.191.147"};
 		//Hello aspects
-		//std::vector<tableRow> nodeTable; function(std::vector<tableRow>* nodeTable)
+		dt.add("192.168.0.1","UNKNOWN");
+		dt.add("192.168.0.11","UNKNOWN");
+		dt.add("192.168.0.15","UNKNOWN");
+		dt.add("192.168.0.17","UNKNOWN");
 		sendHellos(boost::ref(io_service), boost::ref(local_endpoint),boost::lexical_cast<int>(argv[2]));
 		reciever(boost::ref(io_service), boost::ref(local_endpoint),boost::lexical_cast<int>(argv[2]));
 
