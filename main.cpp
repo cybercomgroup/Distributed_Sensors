@@ -16,6 +16,7 @@
 #include <thread>
 #include "helpfunc.h"
 #include "logger.h"
+#include "network.h"
 
 using namespace std;
 
@@ -25,8 +26,10 @@ using namespace std;
 int main(int argc, char** argv) {
 
 
-	thread t1 (logger, "log0001", 500); // funcname, logfilename, #of ms between logging each data point
-	t1.join();
+	thread loggerThread (logger, "log0001", 500); // funcname, logfilename, #of ms between logging each data point
+	thread networkThread (network, 500); // Will run about 2 times every second
+	loggerThread.join();
+	networkThread.join();
 
     return 0;
 }
