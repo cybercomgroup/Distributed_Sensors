@@ -14,6 +14,7 @@
 #include <boost/ref.hpp>
 #include <string>
 #include <unistd.h>
+#include <stdlib.h>
 
 #include "datatable.cpp"
 #include "server.h"
@@ -29,8 +30,9 @@ DeviceTable dt;
 void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint,unsigned short port){
 
 	string* validIps = dt.getValidIP();
+	int size = atoi(validIps[0].c_str());
 	//string* validIps[] = {"192.168.0.1","192.168.0.11","192.168.0.15","192.168.0.17","169.254.191.147"};
-	for( int i = 0; i < sizeof(validIps)/sizeof(validIps[0]); i++){
+	for( int i = 1; i < size; i++){
 		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
 		boost::asio::ip::udp::endpoint endpoint(boost::asio::ip::address::from_string(validIps[i]), port);
 		send_socket.send_to(boost::asio::buffer("H"+sensor,(sensor.size()+1)),endpoint);
