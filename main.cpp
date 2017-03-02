@@ -20,12 +20,10 @@
 #include "helpfunc.h"
 #include "logger.h"
 
-//DEFINES:
-#define SENSOR "Temp"
-
-
 using namespace std;
 
+//Globals:
+string sensor;
 DeviceTable dt;
 
 void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint,unsigned short port){
@@ -35,7 +33,7 @@ void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpo
 	for( int i = 0; i < sizeof(validIps)/sizeof(validIps[0]); i++){
 		boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
 		boost::asio::ip::udp::endpoint endpoint(boost::asio::ip::address::from_string(validIps[i]), port);
-		send_socket.send_to(boost::asio::buffer("H"+SENSOR,5),endpoint);
+		send_socket.send_to(boost::asio::buffer("H"+sensor,(sensor.size()+1)),endpoint);
 	}
 }
 
@@ -68,7 +66,7 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		//Respond to messages
 		//Respond to hello
 		if(command.compare("H") == 0){
-			response = "R"+SENSOR;
+			response = "R"+sensor;
 			dt.addOrUpdateDowntime(sender_endpoint.address().to_string(),variable);
 			//cout<<response<<endl;
 			//Insert into my table
