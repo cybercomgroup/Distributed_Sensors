@@ -1,23 +1,29 @@
-set pspath = C:\Program Files\PuTTY
-set dipath = C:\Tobbe\Skola\Programming\DAT065\Distributed_Sensors
-set piip = 169.254.11.199
+set pspath=C:\"Program Files"\PuTTY\pscp.exe
+set dipath=C:\Users\Tobbeh\Documents\DAT065\Distributed_Sensors
+set piip=169.254.11.199
 ::169.254.11.199 = 17 på lina
 :: fredriks dipath: C:\Chalmers\Distributed_Sensors\
 :: fredriks pspath: C:\ProgramData\chocolatey\bin\pscp.exe
 
-C:\"Program Files"\PuTTY\pscp.exe -scp -pw distsensor C:\Tobbe\Skola\Programming\DAT065\Distributed_Sensors\main.cpp pi@169.254.11.199:/home/pi/Distributed_Sensors/main.cpp
+%pspath% -scp -pw distsensor %dipath%\main.cpp pi@%piip%:/home/pi/Distributed_Sensors/main.cpp
 
-C:\"Program Files"\PuTTY\pscp.exe -scp -pw distsensor C:\Tobbe\Skola\Programming\DAT065\Distributed_Sensors\client.cpp pi@169.254.11.199:/home/pi/Distributed_Sensors/client.cpp
+::%pspath% -scp -pw distsensor %dipath%\helpfunc.h pi@%piip%:/home/pi/Distributed_Sensors/helpfunc.h
 
-C:\"Program Files"\PuTTY\pscp.exe -scp -pw distsensor C:\Tobbe\Skola\Programming\DAT065\Distributed_Sensors\client.h pi@169.254.11.199:/home/pi/Distributed_Sensors/client.h
+::%pspath% -scp -pw distsensor %dipath%\helpfunc.cpp pi@%piip%:/home/pi/Distributed_Sensors/helpfunc.cpp
 
-C:\"Program Files"\PuTTY\pscp.exe -scp -pw distsensor C:\Tobbe\Skola\Programming\DAT065\Distributed_Sensors\server.cpp pi@169.254.11.199:/home/pi/Distributed_Sensors/server.cpp
+::%pspath% -scp -pw distsensor %dipath%\logger.h pi@%piip%:/home/pi/Distributed_Sensors/logger.h
 
-C:\"Program Files"\PuTTY\pscp.exe -scp -pw distsensor C:\Tobbe\Skola\Programming\DAT065\Distributed_Sensors\server.h pi@169.254.11.199:/home/pi/Distributed_Sensors/server.h
+::%pspath% -scp -pw distsensor %dipath%\logger.cpp pi@%piip%:/home/pi/Distributed_Sensors/logger.cpp
 
-C:\"Program Files"\PuTTY\pscp.exe -scp -pw distsensor C:\Tobbe\Skola\Programming\DAT065\Distributed_Sensors\Makefile pi@169.254.11.199:/home/pi/Distributed_Sensors/Makefile
+%pspath% -scp -pw distsensor %dipath%\datatable.cpp pi@%piip%:/home/pi/Distributed_Sensors/datatable.cpp
+
+::%pspath% -scp -pw distsensor %dipath%\server.cpp pi@%piip%:/home/pi/Distributed_Sensors/server.cpp
+
+::%pspath% -scp -pw distsensor %dipath%\server.h pi@%piip%:/home/pi/Distributed_Sensors/server.h
+
+::%pspath% -scp -pw distsensor %dipath%\Makefile pi@%piip%:/home/pi/Distributed_Sensors/Makefile
 
 
-plink -v 169.254.11.199 -l pi -pw distsensor -batch -m commands.txt
+::plink -v %piip% -l pi -pw distsensor -batch -m commands.txt
 pause
 transfer.bat
