@@ -63,7 +63,6 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		boost::asio::buffer(recv_buf), sender_endpoint);
 
 		std::cout << "Recieved data from IPv4: " << sender_endpoint.address().to_string() << std::endl;
-		//std::cout << recv_buf.data() << endl;
 
 		//Make message more manageable
 		string message(recv_buf.data(), len);
@@ -76,23 +75,13 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		if(command.compare("H") == 0){
 			response = "R"+sensor;
 			dt.addOrUpdateDowntime(sender_endpoint.address().to_string(),variable);
-			//cout<<response<<endl;
-			//Insert into my table
-			/*
-			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
-			sender_endpoint.port(recievePort);
-			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
-			*/
 		}
 		//Write to console (MAINLY FOR TESTING)
 		if(command.compare("W") == 0){
-			//response = "Writing";
 			cout<<"Writing on request from "<<sender_endpoint.address().to_string()<<endl;
-			dt.print();
-			/*
-			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
-			sender_endpoint.port(recievePort);
-			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);*/
+			if(variable.compare("dt")){
+				dt.print();
+			}
 		}
 		if(command.compare("F") == 0){
 			response = "W" + getTemp();
@@ -125,16 +114,13 @@ int main(int argc, char** argv) {
 		boost::lexical_cast<int>(argv[2]));
 		std::cout << "Local bind " << local_endpoint << std::endl;
 
-
-		//string* validIps[] = {"192.168.0.1","192.168.0.11","192.168.0.15","192.168.0.17","169.254.191.147"};
 		//Hello aspects
 		dt.add("192.168.0.1","UNKNOWN");
 		dt.add("192.168.0.11","UNKNOWN");
 		dt.add("192.168.0.15","UNKNOWN");
 		dt.add("192.168.0.17","UNKNOWN");
 
-		dt.delete(argv[1]);
-
+		dt.deleteDevice(argv[1]);
 
 		thread t1 (sendHellos, boost::ref(io_service), boost::ref(local_endpoint),boost::lexical_cast<int>(argv[2]));
 		reciever(boost::ref(io_service), boost::ref(local_endpoint),boost::lexical_cast<int>(argv[2]));
