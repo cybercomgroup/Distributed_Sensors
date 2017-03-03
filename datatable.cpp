@@ -62,9 +62,9 @@ void DeviceTable::addOrUpdateDowntime(string ip,string sensor) {
 
     while(pointer->next != 0)
     {
-      if(pointer->ip.compare(ip) == 0)
+      if(pointer->next->ip.compare(ip) == 0)
       {
-          pointer->last_response = getEpoch();
+          pointer->next->last_response = getEpoch();
           return;
       }
       pointer = pointer->next;
@@ -119,21 +119,23 @@ void DeviceTable::updateDeviceDowntime(string ip) {
 }
 
 void DeviceTable::deleteDevice(string ip) {
-  Device *pointer = head->next;
-  Device *prev = head;
-  if(pointer != 0){
-    while(pointer != 0)
+  Device *pointer = head;
+  Device *tempP = 0;
+
+    while(pointer->next != 0)
     {
-      if(pointer->ip.compare(ip) == 0){
-          prev->next = pointer->next;
-          delete pointer;
+      if(pointer->next->ip.compare(ip) == 0){
+          tempP = pointer->next->next;
+          delete pointer->next;
+          pointer->next = tempP;
           size--;
           return;
       }
-      prev = pointer;
-      pointer = pointer->next;
+      else {
+        pointer = pointer->next;
+      }
     }
-  }
+
 }
 
 void DeviceTable::print() {
