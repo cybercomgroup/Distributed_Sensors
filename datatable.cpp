@@ -12,8 +12,8 @@ struct Device {
 class DeviceTable {
 
 public:
-    DeviceTable();
-    void init();
+    DeviceTable(int dwnT);
+    void init(int dwnT);
     void add(string ip,string sensor);
     void addOrUpdateDowntime(string ip,string sensor);
     string* getValidIP();
@@ -140,7 +140,7 @@ void DeviceTable::print() {
     Device *pointer = head->next;
     while(pointer != 0)
     {
-      cout << "IP: " << pointer->ip << endl;
+      cout << "IP: " << pointer->ip << "\t| Sensor: " << pointer->sensor_type << endl;
       pointer = pointer->next;
     }
 
