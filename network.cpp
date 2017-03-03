@@ -31,7 +31,7 @@
 using namespace std;
 
 string sensor;
-DeviceTable dt;
+DeviceTable dt(60);
 
 
 
@@ -42,6 +42,7 @@ void networkRecieve(int waittime, boost::asio::io_service &io_service, boost::as
 	dt.add("192.168.0.11","UNKNOWN");
 	dt.add("192.168.0.15","UNKNOWN");
 	dt.add("192.168.0.17","UNKNOWN");
+	dt.deleteDevice(local_endpoint.address().to_string());
 	reciever(boost::ref(io_service), boost::ref(local_endpoint),port);
 }
 
@@ -83,9 +84,7 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		boost::asio::buffer(recv_buf), sender_endpoint);
 
 		std::cout << "Recieved data from IPv4: " << sender_endpoint.address().to_string() << std::endl;
-		//std::cout << recv_buf.data() << endl;
 
-		sleep(1);
 		//Make message more manageable
 		string message(recv_buf.data(), len);
 		command = message.substr(0,1);
@@ -97,24 +96,16 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		if(command.compare("H") == 0){
 			response = "R"+sensor;
 			dt.addOrUpdateDowntime(sender_endpoint.address().to_string(),variable);
-			//cout<<response<<endl;
-			//Insert into my table
-			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
-			sender_endpoint.port(recievePort);
-			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
 		}
 		//Write to console (MAINLY FOR TESTING)
 		if(command.compare("W") == 0){
-			response = "Writing";
-
-			cout<<"Writing on request from "<<sender_endpoint.address().to_string()<<": "<<variable<<endl;
-			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
-			sender_endpoint.port(recievePort);
-			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
+			cout<<"Writing on request from "<<sender_endpoint.address().to_string()<<endl;
+			if(variable.compare("dt")){
+				dt.print();
+			}
 		}
 		if(command.compare("F") == 0){
 			response = "W" + getTemp();
-
 			boost::asio::ip::udp::socket send_socket(io_service,boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),0));
 			sender_endpoint.port(recievePort);
 			send_socket.send_to(boost::asio::buffer(response,response.size()),sender_endpoint);
@@ -126,7 +117,6 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 			cout<<"Reciever will now terminate"<<endl;
 			break;
 		}
-		dt.print();
-		usleep(10);
+		usleep(500);
 	}
 }
