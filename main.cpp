@@ -32,7 +32,7 @@ bool run = true;
 void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint,unsigned short port){
 	while(run)
 	{
-		usleep(1000);
+		sleep(3);
 
 
 		string* validIps = dt.getValidIP();
@@ -65,7 +65,6 @@ void reciever(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoin
 		std::cout << "Recieved data from IPv4: " << sender_endpoint.address().to_string() << std::endl;
 		//std::cout << recv_buf.data() << endl;
 
-		sleep(1);
 		//Make message more manageable
 		string message(recv_buf.data(), len);
 		command = message.substr(0,1);
@@ -133,6 +132,8 @@ int main(int argc, char** argv) {
 		dt.add("192.168.0.11","UNKNOWN");
 		dt.add("192.168.0.15","UNKNOWN");
 		dt.add("192.168.0.17","UNKNOWN");
+
+		dt.delete(argv[1]);
 
 
 		thread t1 (sendHellos, boost::ref(io_service), boost::ref(local_endpoint),boost::lexical_cast<int>(argv[2]));
