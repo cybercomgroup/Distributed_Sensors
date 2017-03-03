@@ -26,7 +26,7 @@ using namespace std;
 
 //Globals:
 string sensor;
-DeviceTable dt;
+DeviceTable dt(5);
 bool run = true;
 
 void sendHellos(boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint,unsigned short port){
