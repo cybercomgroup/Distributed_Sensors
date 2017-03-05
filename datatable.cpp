@@ -65,6 +65,11 @@ void DeviceTable::addOrUpdateDowntime(string ip,string sensor) {
       if(pointer->next->ip.compare(ip) == 0)
       {
           pointer->next->last_response = getEpoch();
+
+          if(pointer->next->sensor_type.compare(sensor) != 0)
+          {
+            pointer->next->sensor_type=sensor;
+          }
           return;
       }
       pointer = pointer->next;
