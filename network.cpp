@@ -40,6 +40,7 @@ DeviceTable dt(60);
 void networkRecieve(int waittime, boost::asio::io_service &io_service, boost::asio::ip::udp::endpoint &local_endpoint, unsigned short port){
 	dt.add("192.168.0.1","UNKNOWN");
 	dt.add("192.168.0.11","UNKNOWN");
+	dt.add("192.168.0.13","UNKNOWN");
 	dt.add("192.168.0.15","UNKNOWN");
 	dt.add("192.168.0.17","UNKNOWN");
 	dt.deleteDevice(local_endpoint.address().to_string());
